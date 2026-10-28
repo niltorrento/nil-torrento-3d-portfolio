@@ -1,0 +1,5 @@
+{
+  "models": [
+    { "file": "models/exemple.glb", "name": "Example (replace with your model)" }
+  ]
+}

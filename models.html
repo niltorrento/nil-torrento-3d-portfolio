@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Models — Nil Torrentó Panadès</title>
+  <meta name="description" content="Portfolio of Nil Torrentó Panadès, 3D Generalist and VFX Artist. Houdini FX, modeling, lookdev and technical animation.">
+  <meta name="theme-color" content="#14110f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-left">
+    <a class="brand" href="index.html">Nil Torrentó</a>
+    <a class="contact-link" href="contact.html">Contact me</a>
+  </div>
+  <nav aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="articles.html">Articles</a>
+    <a href="cv.html">CV</a>
+  </nav>
+</header>
+<main>
+  <section class="page-top">
+    <div class="wrap">
+      <h1 class="page-title">3D Models</h1>
+      <p class="sub">GLB model viewer. Rotate, zoom and pan. Models in the <code>models/</code> folder appear in the list, or drag a .glb file onto the viewer.</p>
+    </div>
+  </section>
+  <section style="border-top:0;padding-top:0">
+    <div class="wrap">
+      <div class="viewer-box" id="dropzone">
+        <model-viewer id="viewer" camera-controls auto-rotate shadow-intensity="1" exposure="1" alt="3D model"></model-viewer>
+        <div class="viewer-empty" id="viewer-empty">Drag a .glb file here or choose one with the button.</div>
+      </div>
+      <div class="viewer-bar">
+        <label for="model-select">Model</label>
+        <select id="model-select"></select>
+        <label class="btn small" for="model-file">Open .glb</label>
+        <input type="file" id="model-file" accept=".glb,.gltf" hidden>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-row"><span>© 2026 Nil Torrentó Panadès · 3D Generalist / VFX Artist</span><a class="to-top" href="#">&uarr; Back to top</a></div>
+</footer>
+<script src="code/main.js"></script>
+<script src="code/scroll.js"></script>
+</body>
+</html>
