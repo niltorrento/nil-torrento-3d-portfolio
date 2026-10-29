@@ -12,6 +12,33 @@
       '<span class="note">Local preview: opens on YouTube. The embedded player works once the site is online.</span></a>';
   }
 
+    // Autoplay the reel (muted) the first time it is fully visible; pause when it leaves the screen
+  var frame = reel && reel.querySelector('iframe');
+  if (frame && location.protocol !== 'file:') {
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+    window.onYouTubeIframeAPIReady = function () {
+      var started = false, pausedByUs = false;
+      var player = new YT.Player(frame, {
+        events: {
+          onReady: function () {
+            var io = new IntersectionObserver(function (entries) {
+              var r = entries[0].intersectionRatio;
+              if (r >= 0.9) {
+                if (!started) { started = true; player.mute(); player.playVideo(); }
+                else if (pausedByUs) { pausedByUs = false; player.playVideo(); }
+              } else if (r < 0.2 && started && player.getPlayerState() === 1) {
+                player.pauseVideo(); pausedByUs = true;
+              }
+            }, { threshold: [0.2, 0.9] });
+            io.observe(reel);
+          }
+        }
+      });
+    };
+  }
+
   // --- Carousels ---
   function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
 
