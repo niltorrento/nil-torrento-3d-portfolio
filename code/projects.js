@@ -11,7 +11,7 @@ window.PROJECTS = [
     meta: "3D short film · 2026 – present",
     summary: "Modeling, CFX and FX.",
     description: "3D modeling, CFX and FX. Highly detailed assets and environments with production-ready retopology, plus Vellum simulations of cloth and hair, in an 8-person team on a USD pipeline.",
-    thumb: "images/la_monja_gitana/lmg_thumbnail.jpg",
+    thumb: "images/la_monja_gitana/lmg_thumbnail.png",
     href: "la-monja-gitana.html",
     featured: true
   },
