@@ -25,13 +25,13 @@
           onReady: function () {
             var io = new IntersectionObserver(function (entries) {
               var r = entries[0].intersectionRatio;
-              if (r >= 0.9) {
+              if (r >= 0.7) {
                 if (!started) { started = true; player.mute(); player.playVideo(); }
                 else if (pausedByUs) { pausedByUs = false; player.playVideo(); }
               } else if (r < 0.2 && started && player.getPlayerState() === 1) {
                 player.pauseVideo(); pausedByUs = true;
               }
-            }, { threshold: [0.2, 0.9] });
+            }, { threshold: [0.2, 0.7] });
             io.observe(reel);
           }
         }
