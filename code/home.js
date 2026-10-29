@@ -39,6 +39,59 @@
     };
   }
 
+  // --- Project cards (shared data from code/projects.js) ---
+  function escapeHTML(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+    });
+  }
+
+  function projectCard(project, featured, pageIndex) {
+    var title = escapeHTML(project.title);
+    var meta = escapeHTML(project.meta);
+    var summary = escapeHTML(project.summary || project.description || '');
+    var description = escapeHTML(project.description || project.summary || '');
+    var thumb = project.thumb
+      ? '<div class="thumb"><img src="' + escapeHTML(project.thumb) + '" alt="' + title + '" loading="lazy"></div>'
+      : '<div class="thumb" role="img" aria-label="' + title + '"></div>';
+    var info = '<div class="info"><h3>' + title + '</h3><p class="meta">' + meta + '</p><p>' +
+      (featured ? description : summary) + '</p>' +
+      (featured ? '<span class="more">View project &rarr;</span>' : '') + '</div>';
+    var href = String(project.href || '').trim();
+    var className = pageIndex ? 'project' + (pageIndex === 1 ? ' featured' : '') : 'slide' + (featured ? ' feature' : '');
+    var content = thumb + info;
+    return href
+      ? '<a class="' + className + '" href="' + escapeHTML(href) + '">' + content + '</a>'
+      : '<div class="' + className + '">' + content + '</div>';
+  }
+
+  function renderProjects() {
+    var projects = Array.isArray(window.PROJECTS) ? window.PROJECTS : [];
+    var featuredTrack = document.getElementById('featured-projects');
+    var allTrack = document.getElementById('all-projects');
+    var projectsPage = document.getElementById('all-projects-page');
+
+    if (featuredTrack) {
+      featuredTrack.innerHTML = projects.filter(function (project) {
+        return project.featured === true;
+      }).map(function (project) {
+        return projectCard(project, true, false);
+      }).join('');
+    }
+    if (allTrack) {
+      allTrack.innerHTML = projects.map(function (project) {
+        return projectCard(project, false, false);
+      }).join('');
+    }
+    if (projectsPage) {
+      projectsPage.innerHTML = projects.map(function (project, index) {
+        return projectCard(project, false, index + 1);
+      }).join('');
+    }
+  }
+
+  renderProjects();
+
   // --- Carousels ---
   function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
 
