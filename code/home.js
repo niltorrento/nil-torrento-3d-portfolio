@@ -12,7 +12,7 @@
       '<span class="note">Local preview: opens on YouTube. The embedded player works once the site is online.</span></a>';
   }
 
-    // Autoplay the reel (muted) the first time it is fully visible; pause when it leaves the screen
+  // Autoplay the reel (muted) the first time it is fully visible; pause when it leaves the screen
   var frame = reel && reel.querySelector('iframe');
   if (frame && location.protocol !== 'file:') {
     var tag = document.createElement('script');
