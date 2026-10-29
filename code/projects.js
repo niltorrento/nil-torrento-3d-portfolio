@@ -7,21 +7,21 @@
 // The order here is the order in the carousels.
 window.PROJECTS = [
   {
-    title: "La Monja Gitana",
-    meta: "3D short film · 2026 – present",
-    summary: "Modeling, CFX and FX.",
-    description: "3D modeling, CFX and FX. Highly detailed assets and environments with production-ready retopology, plus Vellum simulations of cloth and hair, in an 8-person team on a USD pipeline.",
-    thumb: "images/la_monja_gitana/lmg_thumbnail.png",
-    href: "la-monja-gitana.html",
-    featured: true
-  },
-  {
     title: "Museum",
     meta: "Project",
     summary: "Project description.",
     description: "Project description.",
     thumb: "images/museum/museum_thumbnail.jpg",
     href: "museum.html",
+    featured: true
+  },
+  {
+    title: "La Monja Gitana",
+    meta: "3D short film · 2026 – present",
+    summary: "Modeling, CFX and FX.",
+    description: "3D modeling, CFX and FX. Highly detailed assets and environments with production-ready retopology, plus Vellum simulations of cloth and hair, in an 8-person team on a USD pipeline.",
+    thumb: "images/la_monja_gitana/lmg_thumbnail.png",
+    href: "la-monja-gitana.html",
     featured: true
   },
   {
