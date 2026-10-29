@@ -246,6 +246,13 @@ html { scroll-behavior: auto; }  /* scrolling is animated by code/scroll.js */
   background: linear-gradient(to bottom, rgba(20,17,15,0) 0%, rgba(20,17,15,.6) 55%, var(--bg) 100%);
 }
 
-/* Real thumbnails */
+/* Real thumbnails: the card keeps its size, the image scales down to fit inside it */
 .thumb { position: relative; overflow: hidden; }
-.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+.thumb:has(> img) { background: #0e0c0b; }
+
+/* Side-by-side cards (desktop): image at the top, text next to it */
+@media (min-width: 761px) {
+  .feature .thumb:has(> img),
+  .featured .thumb:has(> img) { align-self: flex-start; }
+}
