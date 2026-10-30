@@ -112,14 +112,37 @@
     var meta = escapeHTML(project.meta);
     var summary = escapeHTML(project.summary || project.description || '');
     var description = escapeHTML(project.description || project.summary || '');
-    var thumb = project.thumb
-      ? '<div class="thumb"><img src="' + escapeHTML(project.thumb) + '" alt="' + title + '" loading="lazy"></div>'
-      : '<div class="thumb" role="img" aria-label="' + title + '"></div>';
+    var thumbImage = project.thumb
+      ? '<img src="' + escapeHTML(project.thumb) + '" alt="' + title + '" loading="lazy">'
+      : '';
+    var thumbVideo = project.video
+      ? '<video class="project-video" data-video-src="' + escapeHTML(project.video) + '" poster="' + escapeHTML(project.thumb || '') + '" muted loop playsinline preload="none" aria-hidden="true"></video>'
+      : '';
+    var thumb = '<div class="thumb"' + (!project.thumb ? ' role="img" aria-label="' + title + '"' : '') + '>' +
+      thumbImage + thumbVideo + '</div>';
+    var href = String(project.href || '').trim();
+    if (pageIndex) {
+      var titleColor = /^#[\da-f]{3}(?:[\da-f]{3})?$/i.test(project.titleColor || '')
+        ? project.titleColor
+        : '#fff5f0';
+      var roles = Array.isArray(project.roles) ? project.roles : [];
+      var roleTags = roles.map(function (role) {
+        return '<span>' + escapeHTML(role) + '</span>';
+      }).join('');
+      var visual = '<div class="project-visual">' + thumb +
+        '<div class="project-heading">' +
+        (roleTags ? '<div class="project-roles" aria-label="Project roles">' + roleTags + '</div>' : '') +
+        (meta ? '<p class="project-meta" style="--project-title-color:' + titleColor + '">' + meta + '</p>' : '') +
+        '</div></div>' +
+        '<h2 class="project-title" style="--project-title-color:' + titleColor + '">' + title + '</h2>';
+      return href
+        ? '<article class="project project-showcase"><a class="project-visual-link" href="' + escapeHTML(href) + '">' + visual + '</a></article>'
+        : '<article class="project project-showcase">' + visual + '</article>';
+    }
     var info = '<div class="info"><h3>' + title + '</h3><p class="meta">' + meta + '</p><p>' +
       (featured ? description : summary) + '</p>' +
       (featured ? '<span class="more">View project &rarr;</span>' : '') + '</div>';
-    var href = String(project.href || '').trim();
-    var className = pageIndex ? 'project' + (pageIndex === 1 ? ' featured' : '') : 'slide' + (featured ? ' feature' : '');
+    var className = 'slide' + (featured ? ' feature' : '');
     var content = thumb + info;
     return href
       ? '<a class="' + className + '" href="' + escapeHTML(href) + '">' + content + '</a>'
@@ -145,13 +168,71 @@
       }).join('');
     }
     if (projectsPage) {
-      projectsPage.innerHTML = projects.map(function (project, index) {
+      projectsPage.innerHTML = projects.slice().sort(function (a, b) {
+        return (a.projectsPageOrder || 0) - (b.projectsPageOrder || 0);
+      }).map(function (project, index) {
         return projectCard(project, false, index + 1);
       }).join('');
     }
   }
 
+  function initProjectVideos() {
+    var videos = document.querySelectorAll('.project-video[data-video-src]');
+    if (!videos.length) return;
+
+    function activate(video) {
+      var playResult = video.play();
+      if (playResult && typeof playResult.then === 'function') {
+        playResult.then(function () {
+          video.parentElement.classList.add('is-playing');
+        }).catch(function () {
+          video.parentElement.classList.remove('is-playing');
+        });
+      } else {
+        video.parentElement.classList.add('is-playing');
+      }
+    }
+
+    function load(video) {
+      if (!video.src) {
+        video.src = video.dataset.videoSrc;
+        video.load();
+      }
+      if (video.readyState >= 2) activate(video);
+    }
+
+    videos.forEach(function (video) {
+      video.addEventListener('canplay', function () {
+        if (video.dataset.visible === 'true') activate(video);
+      });
+      video.addEventListener('error', function () {
+        video.parentElement.classList.remove('is-playing');
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var video = entry.target;
+          video.dataset.visible = String(entry.isIntersecting);
+          if (entry.isIntersecting) {
+            load(video);
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.1 });
+      videos.forEach(function (video) { observer.observe(video); });
+    } else {
+      videos.forEach(function (video) {
+        video.dataset.visible = 'true';
+        load(video);
+      });
+    }
+  }
+
   renderProjects();
+  initProjectVideos();
 
   // --- Carousels ---
   function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
@@ -169,7 +250,11 @@
     function offsets() {
       var left = track.getBoundingClientRect().left;
       return Array.prototype.map.call(track.querySelectorAll('.slide'), function (s) {
-        return Math.min(s.getBoundingClientRect().left - left + track.scrollLeft, maxScroll());
+        var rect = s.getBoundingClientRect();
+        return Math.max(0, Math.min(
+          rect.left - left + track.scrollLeft - (track.clientWidth - rect.width) / 2,
+          maxScroll()
+        ));
       });
     }
     function cancel() {
@@ -204,6 +289,19 @@
     function update() {
       var max = maxScroll() - 2;
       block.classList.toggle('no-scroll', max <= 0);
+      var center = track.getBoundingClientRect().left + track.clientWidth / 2;
+      var current = null, distance = Infinity;
+      track.querySelectorAll('.slide').forEach(function (slide) {
+        var rect = slide.getBoundingClientRect();
+        var nextDistance = Math.abs(rect.left + rect.width / 2 - center);
+        if (nextDistance < distance) {
+          current = slide;
+          distance = nextDistance;
+        }
+      });
+      track.querySelectorAll('.slide').forEach(function (slide) {
+        slide.classList.toggle('is-current', slide === current);
+      });
       arrows.forEach(function (b) {
         b.disabled = Number(b.dataset.dir) < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max;
       });
