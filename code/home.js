@@ -115,7 +115,7 @@
     var thumbImage = project.thumb
       ? '<img src="' + escapeHTML(project.thumb) + '" alt="' + title + '" loading="lazy">'
       : '';
-    var thumbVideo = project.video
+    var thumbVideo = pageIndex && project.video
       ? '<video class="project-video" data-video-src="' + escapeHTML(project.video) + '" poster="' + escapeHTML(project.thumb || '') + '" muted loop playsinline preload="none" aria-hidden="true"></video>'
       : '';
     var thumb = '<div class="thumb"' + (!project.thumb ? ' role="img" aria-label="' + title + '"' : '') + '>' +
