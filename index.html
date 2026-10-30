@@ -39,11 +39,11 @@
 
   <section class="showreel" id="showreel">
     <div class="wrap">
-      <div class="hero-links hero-actions">
-        <a class="btn" href="animacio.html">Animation</a>
-        <a class="btn" href="fx.html">FX</a>
-        <a class="btn" href="cv.html">CV</a>
-        <a class="btn" href="articles.html">Articles</a>
+      <div class="hero-links hero-actions reel-switcher" role="group" aria-label="Choose a showreel">
+        <button class="btn reel-choice" type="button" data-reel="3D Generalist" aria-pressed="true">3D Generalist</button>
+        <button class="btn reel-choice" type="button" data-reel="FX" aria-pressed="false">FX</button>
+        <button class="btn reel-choice" type="button" data-reel="CFX" aria-pressed="false">CFX</button>
+        <button class="btn reel-choice" type="button" data-reel="Modeling" aria-pressed="false">Modeling</button>
       </div>
       <div class="reel" id="reel">
         <iframe src="https://www.youtube.com/embed/zF50GhnikD0?rel=0&enablejsapi=1&playsinline=1" title="Nil Torrentó 3D Generalist Reel" allow="accelerometer; autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -58,11 +58,13 @@
         <h2>Featured Projects</h2>
         <div class="carousel-nav">
           <button class="car-btn car-toggle" type="button" aria-label="Pause autoplay">&#10074;&#10074;</button>
-          <button class="car-btn" type="button" data-dir="-1" aria-label="Previous">&larr;</button>
-          <button class="car-btn" type="button" data-dir="1" aria-label="Next">&rarr;</button>
         </div>
       </div>
-      <div class="carousel" id="featured-projects" tabindex="0" aria-label="Featured projects carousel" data-interval="6000"></div>
+      <div class="carousel-wrap">
+        <button class="car-btn car-side car-prev" type="button" data-dir="-1" aria-label="Previous">&larr;</button>
+        <div class="carousel" id="featured-projects" tabindex="0" aria-label="Featured projects carousel" data-interval="6000"></div>
+        <button class="car-btn car-side car-next" type="button" data-dir="1" aria-label="Next">&rarr;</button>
+      </div>
     </div>
   </section>
 
@@ -72,11 +74,13 @@
         <h2>Projects</h2>
         <div class="carousel-nav">
           <button class="car-btn car-toggle" type="button" aria-label="Pause autoplay">&#10074;&#10074;</button>
-          <button class="car-btn" type="button" data-dir="-1" aria-label="Previous">&larr;</button>
-          <button class="car-btn" type="button" data-dir="1" aria-label="Next">&rarr;</button>
         </div>
       </div>
-      <div class="carousel" id="all-projects" tabindex="0" aria-label="Projects carousel" data-interval="4000"></div>
+      <div class="carousel-wrap">
+        <button class="car-btn car-side car-prev" type="button" data-dir="-1" aria-label="Previous">&larr;</button>
+        <div class="carousel" id="all-projects" tabindex="0" aria-label="Projects carousel" data-interval="4000"></div>
+        <button class="car-btn car-side car-next" type="button" data-dir="1" aria-label="Next">&rarr;</button>
+      </div>
     </div>
   </section>
 
@@ -102,7 +106,15 @@
   </section>
 </main>
 <footer class="site-footer">
-  <div class="wrap footer-row"><span>© 2026 Nil Torrentó Panadès · 3D Generalist / VFX Artist</span><a class="to-top" href="#">&uarr; Back to top</a></div>
+  <div class="wrap footer-row">
+    <span>© 2026 Nil Torrentó Panadès · 3D Generalist / VFX Artist</span>
+    <div class="footer-links">
+      <a href="mailto:niltop.nil@gmail.com">niltop.nil@gmail.com</a>
+      <a href="https://www.linkedin.com/in/nil-torrent%C3%B3-03869719b/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.artstation.com/nailscat" target="_blank" rel="noopener">ArtStation</a>
+    </div>
+    <a class="to-top" href="#">&uarr; Back to top</a>
+  </div>
 </footer>
 <script src="code/projects.js"></script>
 <script src="code/home.js"></script>

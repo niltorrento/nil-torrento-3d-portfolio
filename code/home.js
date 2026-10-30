@@ -4,31 +4,92 @@
   // YouTube refuses embeds from pages opened as files (file://, "Error 153").
   // In that case show a thumbnail that opens the video on YouTube instead.
   var reel = document.getElementById('reel');
-  if (reel && location.protocol === 'file:') {
+  var frame = reel && reel.querySelector('iframe');
+  var fallback = null;
+  var placeholder = null;
+  var reelChoices = document.querySelectorAll('.reel-choice');
+  var selectedGeneralist = true;
+  var reelVisible = false;
+  var player = null;
+  var started = false;
+  var pausedByUs = false;
+
+  if (reel && frame && location.protocol === 'file:') {
     var id = 'zF50GhnikD0';
-    reel.innerHTML = '<a class="reel-fallback" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener" aria-label="Watch the reel on YouTube">' +
+    frame.hidden = true;
+    fallback = document.createElement('a');
+    fallback.className = 'reel-fallback';
+    fallback.href = 'https://www.youtube.com/watch?v=' + id;
+    fallback.target = '_blank';
+    fallback.rel = 'noopener';
+    fallback.setAttribute('aria-label', 'Watch the reel on YouTube');
+    fallback.innerHTML =
       '<img src="https://img.youtube.com/vi/' + id + '/hqdefault.jpg" alt="">' +
       '<span class="play" aria-hidden="true">&#9654;</span>' +
-      '<span class="note">Local preview: opens on YouTube. The embedded player works once the site is online.</span></a>';
+      '<span class="note">Local preview: opens on YouTube. The embedded player works once the site is online.</span>';
+    reel.appendChild(fallback);
+  }
+
+  if (reel && frame) {
+    placeholder = document.createElement('div');
+    placeholder.className = 'reel-placeholder';
+    placeholder.hidden = true;
+    placeholder.setAttribute('role', 'status');
+    placeholder.setAttribute('aria-live', 'polite');
+    reel.appendChild(placeholder);
+
+    reelChoices.forEach(function (button) {
+      button.addEventListener('click', function () {
+        selectedGeneralist = button.dataset.reel === '3D Generalist';
+        reelChoices.forEach(function (choice) {
+          choice.setAttribute('aria-pressed', String(choice === button));
+        });
+
+        frame.hidden = !selectedGeneralist || location.protocol === 'file:';
+        if (fallback) fallback.hidden = !selectedGeneralist;
+        placeholder.hidden = selectedGeneralist;
+        if (!selectedGeneralist) {
+          placeholder.textContent = button.dataset.reel + ' reel coming soon.';
+          if (player && started && player.getPlayerState() === 1) {
+            player.pauseVideo();
+            pausedByUs = true;
+          }
+        } else if (player && reelVisible) {
+          if (!started) {
+            started = true;
+            player.mute();
+            player.playVideo();
+          } else if (pausedByUs) {
+            pausedByUs = false;
+            player.playVideo();
+          }
+        }
+      });
+    });
   }
 
   // Autoplay the reel (muted) the first time it is fully visible; pause when it leaves the screen
-  var frame = reel && reel.querySelector('iframe');
   if (frame && location.protocol !== 'file:') {
     var tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     document.head.appendChild(tag);
     window.onYouTubeIframeAPIReady = function () {
-      var started = false, pausedByUs = false;
-      var player = new YT.Player(frame, {
+      player = new YT.Player(frame, {
         events: {
           onReady: function () {
             var io = new IntersectionObserver(function (entries) {
               var r = entries[0].intersectionRatio;
+              reelVisible = r >= 0.7;
               if (r >= 0.7) {
-                if (!started) { started = true; player.mute(); player.playVideo(); }
-                else if (pausedByUs) { pausedByUs = false; player.playVideo(); }
-              } else if (r < 0.2 && started && player.getPlayerState() === 1) {
+                if (selectedGeneralist && !started) {
+                  started = true;
+                  player.mute();
+                  player.playVideo();
+                } else if (selectedGeneralist && pausedByUs) {
+                  pausedByUs = false;
+                  player.playVideo();
+                }
+              } else if (r < 0.2 && selectedGeneralist && started && player.getPlayerState() === 1) {
                 player.pauseVideo(); pausedByUs = true;
               }
             }, { threshold: [0.2, 0.7] });
