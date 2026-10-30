@@ -270,3 +270,23 @@ html { scroll-behavior: auto; }  /* scrolling is animated by code/scroll.js */
 .carousel-block.no-scroll .car-side { display: none; }
 .carousel-block.no-scroll .carousel { grid-column: 1 / -1; }
 @media (max-width: 760px) { .carousel-wrap { grid-template-columns: 2.4rem minmax(0, 1fr) 2.4rem; gap: .4rem; } }
+
+/* Gradient lateral per a les fletxes del carrusel */
+.car-side {
+  border: 0;
+  box-shadow: none;
+  transition: background .25s ease, color .25s ease;
+}
+.car-side.car-prev {
+  background: linear-gradient(90deg, rgba(224,48,30,.32), rgba(20,17,15,.08));
+}
+.car-side.car-next {
+  background: linear-gradient(270deg, rgba(224,48,30,.32), rgba(20,17,15,.08));
+}
+.car-side:hover:not(:disabled) {
+  background: linear-gradient(90deg, rgba(224,48,30,.58), rgba(20,17,15,.16));
+  color: var(--glow);
+}
+.car-side.car-next:hover:not(:disabled) {
+  background: linear-gradient(270deg, rgba(224,48,30,.58), rgba(20,17,15,.16));
+}
